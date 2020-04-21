@@ -1,3 +1,6 @@
+// We don't use this file.
+// We have copied the code below into index.html
+
 // Library Code
 function createStore(reducer) {
   // The store should have four parts
