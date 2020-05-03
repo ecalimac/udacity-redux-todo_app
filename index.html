@@ -29,6 +29,11 @@
       <button id="goalBtn">Add Goal</button>
       <ul id="goals"></ul>
     </div>
+
+    <hr />
+
+    <div id="App"></div>
+
     <script type="text/javascript">
       function generateId() {
         return (
@@ -231,6 +236,15 @@
         node.appendChild(removeBtn);
         document.getElementById("goals").appendChild(node);
       }
+    </script>
+    <script type="text/babel">
+      class App extends React.Component {
+        render() {
+          return <div>Yupee App</div>;
+        }
+      }
+
+      ReactDOM.render(<App />, document.getElementById("App"));
     </script>
   </body>
 </html>
