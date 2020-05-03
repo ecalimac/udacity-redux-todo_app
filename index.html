@@ -13,25 +13,6 @@
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
   </head>
   <body>
-    <div>
-      <h1>
-        Todo List
-      </h1>
-      <input id="todo" type="text" placeholder="Add Todo" />
-      <button id="todoBtn">Add Todo</button>
-      <ul id="todos"></ul>
-    </div>
-    <div>
-      <h1>
-        Goals List
-      </h1>
-      <input id="goal" type="text" placeholder="Add Goal" />
-      <button id="goalBtn">Add Goal</button>
-      <ul id="goals"></ul>
-    </div>
-
-    <hr />
-
     <div id="App"></div>
 
     <script type="text/javascript">
@@ -151,91 +132,6 @@
         }),
         Redux.applyMiddleware(checker, logger)
       );
-
-      store.subscribe(() => {
-        const { goals, todos } = store.getState();
-        document.getElementById("goals").innerHTML = "";
-        document.getElementById("todos").innerHTML = "";
-        goals.forEach(addGoalToDOM);
-        todos.forEach(addTodoToDOM);
-      });
-
-      //   DOM Code
-
-      function addTodo() {
-        const input = document.getElementById("todo");
-        const name = input.value;
-        input.value = "";
-
-        store.dispatch(
-          addTodoAction({
-            name,
-            complete: false,
-            id: generateId(),
-          })
-        );
-      }
-
-      function addGoal() {
-        const input = document.getElementById("goal");
-        const name = input.value;
-        input.value = "";
-
-        store.dispatch(
-          addGoalAction({
-            name,
-            id: generateId(),
-          })
-        );
-      }
-
-      document.getElementById("todoBtn").addEventListener("click", addTodo);
-      document.getElementById("goalBtn").addEventListener("click", addGoal);
-
-      function createRemoveBtn(onCLick) {
-        const removeBtn = document.createElement("button");
-        removeBtn.innerHTML = "X";
-        removeBtn.addEventListener("click", onCLick);
-
-        return removeBtn;
-      }
-
-      function addTodoToDOM(todo) {
-        //make li
-        const node = document.createElement("li");
-        //text displayed inside the <li>
-        const text = document.createTextNode(todo.name);
-        //Create remove buton
-        const removeBtn = createRemoveBtn(() => {
-          store.dispatch(removeTodoAction(todo.id));
-        });
-
-        // Add text inside the <li>
-        node.appendChild(text);
-        // After appendig the text we want to append the remove button
-        node.appendChild(removeBtn);
-
-        node.style.textDecoration = todo.complete ? "line-through" : "none";
-        node.addEventListener("click", () => {
-          store.dispatch(toggleTodoAction(todo.id));
-        });
-
-        // Add the <li> inside of the <ul>
-        document.getElementById("todos").appendChild(node);
-      }
-
-      function addGoalToDOM(goal) {
-        const node = document.createElement("li");
-        const text = document.createTextNode(goal.name);
-        //Create remove buton
-        const removeBtn = createRemoveBtn(() => {
-          store.dispatch(removeGoalAction(goal.id));
-        });
-
-        node.appendChild(text);
-        node.appendChild(removeBtn);
-        document.getElementById("goals").appendChild(node);
-      }
     </script>
     <script type="text/babel">
       function List(props) {
