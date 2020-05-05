@@ -194,7 +194,16 @@
           );
         };
         removeItem = (todo) => {
+          //first try. you can notice that will appear a slight delay because it take some time to delete it from the server
+          // return API.deleteGoal(goal.id).then(() => {
+          //   this.props.store.dispatch(removeGoalAction(goal.id));
+          // });
+          //second happy try: optimistic update
           this.props.store.dispatch(removeTodoAction(todo.id));
+          return API.deleteTodo(todo.id).catch(() => {
+            this.props.store.dispatch(addTodoAction(todo));
+            alert("An error occurred. Try again");
+          });
         };
         toggleItem = (id) => {
           this.props.store.dispatch(toggleTodoAction(id));
@@ -234,7 +243,12 @@
         };
 
         removeItem = (goal) => {
+          // optimistic update
           this.props.store.dispatch(removeGoalAction(goal.id));
+          return API.deleteGoal(goal.id).catch(() => {
+            this.props.store.dispatch(addGoalAction(goal));
+            alert("An error occurred. Try again");
+          });
         };
         render() {
           return (
