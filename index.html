@@ -182,16 +182,15 @@
       class Todos extends React.Component {
         addItem = (e) => {
           e.preventDefault();
-          const name = this.input.value;
-          this.input.value = "";
 
-          this.props.store.dispatch(
-            addTodoAction({
-              name,
-              complete: false,
-              id: generateId(),
+          return API.saveTodo(this.input.value)
+            .then((todo) => {
+              this.props.store.dispatch(addTodoAction(todo));
+              this.input.value = "";
             })
-          );
+            .catch(() => {
+              alert("Sorry. There was an error. Try to add the item again.");
+            });
         };
         removeItem = (todo) => {
           //first try. you can notice that will appear a slight delay because it take some time to delete it from the server
@@ -207,6 +206,10 @@
         };
         toggleItem = (id) => {
           this.props.store.dispatch(toggleTodoAction(id));
+          return API.saveTodoToggle(id).catch(() => {
+            this.props.store.dispatch(toggleTodoAction(id));
+            alert("Sorry, we couldn't toggle it. Try again!");
+          });
         };
         render() {
           return (
@@ -231,15 +234,15 @@
       class Goals extends React.Component {
         addItem = (e) => {
           e.preventDefault();
-          const name = this.input.value;
-          this.input.value = "";
 
-          this.props.store.dispatch(
-            addGoalAction({
-              name,
-              id: generateId(),
+          return API.saveGoal(this.input.value)
+            .then((goal) => {
+              this.props.store.dispatch(addGoalAction(goal));
+              this.input.value = "";
             })
-          );
+            .catch(() => {
+              alert("Sorry: error. Try to add your goal again.");
+            });
         };
 
         removeItem = (goal) => {
