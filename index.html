@@ -98,6 +98,7 @@
           return API.saveTodo(name)
             .then((todo) => {
               dispatch(addTodoAction(todo));
+              //call back function
               cb();
             })
             .catch(() => {
@@ -111,6 +112,7 @@
           return API.saveGoal(name)
             .then((goal) => {
               dispatch(addGoalAction(goal));
+              //call back function
               cb();
             })
             .catch(() => {
@@ -199,7 +201,7 @@
 
       // ES6
       // const checker = (store) => (next) => (action) => {}
-      // ES5
+      // equivalent in ES5
       // function checker(store) {
       //   return function (next) {
       //     return function (action) {}
@@ -272,12 +274,12 @@
         addItem = (e) => {
           e.preventDefault();
 
-          this.props.store.dispatch(
+          this.props.dispatch(
             handleAddTodo(this.input.value, () => (this.input.value = ""))
           );
         };
         removeItem = (todo) => {
-          //first try. you can notice that will appear a slight delay because it take some time to delete it from the server
+          //first try: you can notice that will appear a slight delay because it take some time to delete it from the server
           // return API.deleteGoal(goal.id).then(() => {
           //   this.props.store.dispatch(removeGoalAction(goal.id));
           // });
@@ -288,10 +290,10 @@
           //   alert("An error occurred. Try again");
           // });
           // Cause is better to have ui code and data fetching separately all the logic above has been moved to handleDeleteTodo action creator
-          this.props.store.dispatch(handleDeleteTodo(todo));
+          this.props.dispatch(handleDeleteTodo(todo));
         };
         toggleItem = (id) => {
-          this.props.store.dispatch(handleToggleTodo(id));
+          this.props.dispatch(handleToggleTodo(id));
         };
         render() {
           return (
@@ -312,6 +314,20 @@
           );
         }
       }
+
+      class ConnectedTodos extends React.Component {
+        render() {
+          return (
+            <Context.Consumer>
+              {(store) => {
+                const { todos } = store.getState();
+
+                return <Todos todos={todos} dispatch={store.dispatch} />;
+              }}
+            </Context.Consumer>
+          );
+        }
+      }
       /**
        * Goals component
        **/
@@ -319,14 +335,14 @@
         addItem = (e) => {
           e.preventDefault();
 
-          this.props.store.dispatch(
+          this.props.dispatch(
             handleAddGoal(this.input.value, () => (this.input.value = ""))
           );
         };
 
         removeItem = (goal) => {
           // optimistic update
-          this.props.store.dispatch(handleDeleteGoal(goal));
+          this.props.dispatch(handleDeleteGoal(goal));
         };
         render() {
           return (
@@ -343,6 +359,20 @@
           );
         }
       }
+
+      class ConnectedGoals extends React.Component {
+        render() {
+          return (
+            <Context.Consumer>
+              {(store) => {
+                const { goals } = store.getState();
+                return <Goals goals={goals} dispatch={store.dispatch} />;
+              }}
+            </Context.Consumer>
+          );
+        }
+      }
+
       /**
        * App component
        **/
@@ -356,21 +386,48 @@
         }
         render() {
           const { store } = this.props;
-          const { todos, goals, loading } = store.getState();
+          const { loading } = store.getState();
 
           if (loading === true) {
             return <div>Loading</div>;
           }
           return (
             <div>
-              <Todos todos={todos} store={this.props.store} />
-              <Goals goals={goals} store={this.props.store} />
+              <ConnectedTodos />
+              <ConnectedGoals />
             </div>
           );
         }
       }
 
-      ReactDOM.render(<App store={store} />, document.getElementById("App"));
+      const Context = React.createContext();
+
+      class Provider extends React.Component {
+        render() {
+          return (
+            <Context.Provider value={this.props.store}>
+              {this.props.children}
+            </Context.Provider>
+          );
+        }
+      }
+
+      class ConnectedApp extends React.Component {
+        render() {
+          return (
+            <Context.Consumer>
+              {(store) => <App store={store} />}
+            </Context.Consumer>
+          );
+        }
+      }
+
+      ReactDOM.render(
+        <Provider store={store}>
+          <ConnectedApp />
+        </Provider>,
+        document.getElementById("App")
+      );
     </script>
   </body>
 </html>
