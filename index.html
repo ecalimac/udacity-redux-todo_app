@@ -315,19 +315,9 @@
         }
       }
 
-      class ConnectedTodos extends React.Component {
-        render() {
-          return (
-            <Context.Consumer>
-              {(store) => {
-                const { todos } = store.getState();
-
-                return <Todos todos={todos} dispatch={store.dispatch} />;
-              }}
-            </Context.Consumer>
-          );
-        }
-      }
+      const ConnectedTodos = connect((state) => ({
+        todos: state.todos,
+      }))(Todos);
       /**
        * Goals component
        **/
@@ -360,35 +350,24 @@
         }
       }
 
-      class ConnectedGoals extends React.Component {
-        render() {
-          return (
-            <Context.Consumer>
-              {(store) => {
-                const { goals } = store.getState();
-                return <Goals goals={goals} dispatch={store.dispatch} />;
-              }}
-            </Context.Consumer>
-          );
-        }
-      }
+      const ConnectedGoals = connect((state) => ({
+        goals: state.goals,
+      }))(Goals);
 
       /**
        * App component
        **/
       class App extends React.Component {
         componentDidMount() {
-          const { store } = this.props;
+          const { dispatch } = this.props;
 
-          store.dispatch(handleInitialData());
+          dispatch(handleInitialData());
 
-          store.subscribe(() => this.forceUpdate());
+          //we move this implementation inside ComponentApp
+          // store.subscribe(() => this.forceUpdate());
         }
         render() {
-          const { store } = this.props;
-          const { loading } = store.getState();
-
-          if (loading === true) {
+          if (this.props.loading === true) {
             return <div>Loading</div>;
           }
           return (
@@ -402,6 +381,41 @@
 
       const Context = React.createContext();
 
+      function connect(mapStateToProps) {
+        return (Component) => {
+          //the Receiver will use subscribe in order to be aware whenever the store changes
+          class Receiver extends React.Component {
+            componentDidMount() {
+              const { subscribe } = this.props.store;
+              this.unsubscribe = subscribe(() => {
+                this.forceUpdate();
+              });
+            }
+            componentWillUnmount() {
+              this.unsubscribe;
+            }
+            render() {
+              const { dispatch, getState } = this.props.store;
+              const state = getState();
+              const stateNeeded = mapStateToProps(state);
+              return <Component {...stateNeeded} dispatch={dispatch} />;
+            }
+          }
+
+          class ConnectedCommponent extends React.Component {
+            render() {
+              return (
+                <Context.Consumer>
+                  {(store) => <Receiver store={store} />}
+                </Context.Consumer>
+              );
+            }
+          }
+
+          return ConnectedComponent;
+        };
+      }
+
       class Provider extends React.Component {
         render() {
           return (
@@ -412,15 +426,14 @@
         }
       }
 
-      class ConnectedApp extends React.Component {
-        render() {
-          return (
-            <Context.Consumer>
-              {(store) => <App store={store} />}
-            </Context.Consumer>
-          );
-        }
-      }
+      //Build an abstarction over Context.Consumer by building a connect function
+      //Just like Context.Consume, the connect function will do two things:
+      //render any component and pass that component any data that it need from the store
+
+      //we want to invoke connect that will return us ConnectedApp
+      const ConnectedApp = connect((state) => ({
+        loading: state.loading,
+      }))(App);
 
       ReactDOM.render(
         <Provider store={store}>
