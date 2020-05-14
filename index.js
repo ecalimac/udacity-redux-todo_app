@@ -1,5 +1,5 @@
 // We don't use this file.
-// We have copied the code below into index.html
+// This is a similar implementation of createStore from Redux Library
 
 // Library Code
 function createStore(reducer) {
@@ -34,6 +34,7 @@ function createStore(reducer) {
 }
 
 // App Code
+// Just examples > you can see the result in console
 const ADD_TODO = "ADD_TODO";
 const REMOVE_TODO = "REMOVE_TODO";
 const TOGGLE_TODO = "TOGGLE_TODO";
