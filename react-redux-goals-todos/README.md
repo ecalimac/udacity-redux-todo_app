@@ -28,7 +28,9 @@ To download the project follow the instructions bellow:
 
 ```
 git clone https://github.com/ecalimac/udacity-redux-todo_app.git
-cd react-redux-goals-app
+cd udacity-redux-todo_app
+cd react-redux-goals-todos
+
 ```
 
 Then install dependencies and run:
