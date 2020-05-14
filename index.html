@@ -85,7 +85,9 @@
           goals,
         };
       }
-
+      /**
+       * Data fetching in action creators
+       **/
       function handleInitialData() {
         return (dispatch) => {
           return Promise.all([API.fetchTodos(), API.fetchGoals()]).then(
@@ -155,7 +157,7 @@
       }
 
       /**
-       *
+       * Reducers
        **/
       function todos(state = [], action) {
         switch (action.type) {
@@ -203,7 +205,7 @@
 
       // ES6
       // const checker = (store) => (next) => (action) => {}
-      // equivalent in ES5
+      // is equivalent in ES5 with
       // function checker(store) {
       //   return function (next) {
       //     return function (action) {}
@@ -301,6 +303,9 @@
           return (
             <div>
               <h1>Todo List</h1>
+              // Instead of sticking the value of this field on our component
+              state we will use a ref, // and than stick this ref on this
+              component instance
               <input
                 type="text"
                 placeholder="Add Todo"
