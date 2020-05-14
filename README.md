@@ -16,7 +16,7 @@ Udacity's React Redux course, part of the [React Nanodegree Program](https://uda
 
 ### > In the react-redux-goals-todos folder is the same app, refactored with create-react-app.
 
-#### In order to organize the individual elements of the app the "Rails-style" approach was used. That is, assets are grouped by "type" or "capability": any action will be found in the Actions folder, any reducer will be found in Reducers, and so on.
+#### In order to organize the individual elements of the app, the "Rails-style" approach was used. That is, assets are grouped by "type" or "capability": any action will be found in the Actions folder, any reducer will be found in Reducers, and so on.
 
 ## Getting Started
 
@@ -36,6 +36,7 @@ To download the project follow the instructions bellow:
 
 ```
 git clone https://github.com/ecalimac/udacity-redux-todo_app.git
+cd udacity-redux-goals-app
 cd react-redux-goals-app
 ```
 
