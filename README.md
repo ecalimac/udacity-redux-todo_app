@@ -7,7 +7,7 @@
 - remove todo and goal items
 - click on todo item and mark as done
 
-Alt-H1
+-H1
 
 ### > In index.html file is the implementation of the redux-todo-app
 
